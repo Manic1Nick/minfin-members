@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="test.css" rel="stylesheet" type="text/css" media="all">
+	<title>Test page</title>
+</head>
+<body>
+	<div id='container'>
+		<header>
+			<h1>Comments</h1>
+			<p>There are all nominants</p>
+		</header>
+
+		<div class="topnav">
+		  	<a href="#rules" onClick="openRules()">Open rules</a>
+		  	<input type="text" placeholder="Enter your name...">
+		</div>
+
+		<section class='ratings'>
+			<p class='rating-block' onclick="openRating(0)">BEST MEMBER:			<span id='best-member'></span></p>
+			<p class='rating-block' onclick="openRating(1)">MOST POPULAR MEMBER:	<span id='most-popular-member'></span></p>
+			<p class='rating-block' onclick="openRating(2)">MOST POPULAR COMMENT:	<span id='most-popular-comment'></span></p>
+			<p class='rating-block' onclick="openRating(3)">MOST ACTIVE MEMBER:		<span id='most-active-member'></span></p>
+			<p class='rating-block' onclick="openRating(4)">BEST NEWS BOT:			<span id='best-news-bot'></span></p>
+			<p class='rating-block' onclick="openRating(5)">WORST NEWS BOT:			<span id='worst-news-bot'></span></p>
+			<p class='rating-block' onclick="openRating(6)">MR. SHORT:				<span id='mr-short'></span></p>
+			<p class='rating-block' onclick="openRating(7)">MR. LONG TONGUE:		<span id='mr-long-tongue'></span></p>
+			<p class='rating-block' onclick="openRating(8)">MOST POPULAR NEWS:		<span id='most-popular-news'></span></p>
+			<p class='rating-block' onclick="openRating(9)">MOST POPULAR WORD:		<span id='most-popular-word'></span></p>
+		</section>
+
+		<div id="all-rating" class="overlay">
+		  	<a href="javascript:void(0)" class="closebtn" onclick="closeRating()">&times;</a>
+		  	<div class="overlay-content" id='overlay-inner'></div>
+		</div>
+	</div>
+
+	<script src='index.js'></script>
+</body>
+</html>

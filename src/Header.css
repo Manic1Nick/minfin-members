@@ -1,0 +1,25 @@
+.Header {
+	background-color: #282c34;
+	height: 80px;
+  	/*min-height: 100vh;*/
+  	display: flex;
+  	flex-direction: column;
+  	align-items: center;
+  	justify-content: center;
+  	font-size: calc(10px + 2vmin);
+  	color: white;
+  	border-bottom: 2px solid grey;
+  	border-bottom-width: thin;
+}
+
+.Header p {
+  	font-size: 140%;
+  	font-weight: bold;
+}
+
+.Header p span:nth-child(1) {
+	color: red;
+}
+.Header p span:nth-child(2) {
+	color: white;
+}

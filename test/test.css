@@ -1,0 +1,102 @@
+#container {
+	font-family: Tahoma, Geneva, sans-serif;
+	width: 60%;
+	margin: 0 auto;
+}
+
+header {
+	text-align: center;
+}
+
+.topnav {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;	
+	margin-bottom: 2%;
+}
+
+.topnav > * {
+	padding: 12px 20px 12px 40px;
+}
+
+.topnav input[type=text] {
+    width: 200px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    background-image: url('icon_search.png');
+    background-position: 10px 10px; 
+    background-repeat: no-repeat;
+    /*padding: 12px 20px 12px 40px;*/
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+input[type=text]:focus {
+    width: 50%;
+}
+
+.ratings {	
+	display: flex;
+	flex-direction: column;	
+}
+
+.rating-block {
+	margin: 1% 20%;
+	border-radius: 25px;
+    border: 2px solid #73AD21;
+    padding: 20px;
+}
+
+.rating-block:hover {
+	cursor: pointer;
+	background-color: #73AD21;
+}
+
+/* ===============================================
+	ALL RATING PAGE
+*/
+
+.overlay {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.9);
+    overflow-x: hidden;
+    transition: 0.5s;
+}
+
+.overlay-content {
+    position: relative;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.overlay div, 
+.overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+}
+
+.overlay .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+}
