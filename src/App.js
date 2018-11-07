@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
-import Content from './Content'
 import Header from './Header'
 import TopNav from './TopNav'
+import Ratings from './Ratings'
+import Overlay from './Overlay'
 import './App.css'
 
 import { parseDataToArray } from './utils/ParseUtil'
 
-const MONTH = 9,
+const MONTH = 6,
 	daysInMonth = new Date(2018, MONTH, 0).getDate()
 
 let localData = require('./resources/comments_' + (MONTH > 9 ? MONTH : '0' + MONTH) + '.json')
@@ -21,7 +22,7 @@ class App extends Component {
 		this.state = { 
 			data: [],
 			activeRating: [],
-			openingRating: false
+			openingOverlay: false
 		}
   	}
 
@@ -32,18 +33,13 @@ class App extends Component {
   	handleOpenRating(rating) {
   		this.setState({ 
   			activeRating: rating,
-  			openingRating: true
+  			openingOverlay: true
   		})
-  		console.log(this.state)
-  	}
-
-  	handleCloseRating() {
-  		this.setState({ openingRating: false })
   	}
 
   	render() {
 
-  		const { data, activeRating, openingRating } = this.state
+  		const { data, activeRating, openingOverlay } = this.state
 
 		return (
 	  		<div className="App">
@@ -52,7 +48,7 @@ class App extends Component {
 
 				{ 
 					localData 
-						? 	<Content 
+						? 	<Ratings 
 								data={ localData } 
 								month={ MONTH } 
 								openRating={ this.handleOpenRating.bind(this) } 
@@ -60,7 +56,7 @@ class App extends Component {
 
 						: !localData && data.length === daysInMonth
 							? 
-								<Content 
+								<Ratings 
 									data={ [].concat(...data) } 
 									month={ MONTH } 
 									openRating={ this.handleOpenRating.bind(this) }
@@ -69,20 +65,7 @@ class App extends Component {
 								'Loading data.......' 
 				}
 
-				<div className="overlay" style={{ width: openingRating ? '100%' : '0%' }}>
-				  	<a href="javascript:void(0)" 
-				  		className="closebtn" 
-				  		onClick={ () => this.handleCloseRating() }
-				  	>&times;</a>
-
-				  	<div className="overlay-content">
-				  	{
-				  		activeRating.slice(0, 10).map((rate, i) => 
-				  			<p key={i}>{i+1}: {rate.username}, score: {rate.scores}</p>
-				  		)
-				  	}
-				  	</div>
-				</div>
+				<Overlay content={ activeRating } opening={ openingOverlay } />
 	  		</div>
 		)
   	}

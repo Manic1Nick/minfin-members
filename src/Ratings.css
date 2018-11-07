@@ -1,0 +1,7 @@
+.Ratings {
+	font-family: Tahoma, Geneva, sans-serif;
+	width: 60%;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;	
+}

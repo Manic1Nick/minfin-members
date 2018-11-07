@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import './Content.css'
+import RatingItem from './RatingItem'
+import './Ratings.css'
 
 import { createUsersObj } from './utils/UsersUtil'
 import { createRatingsObj } from './utils/RatingsUtil'
 import { createWinnersObj } from './utils/WinnersUtil'
 
-class Content extends Component {
+class Ratings extends Component {
 	constructor() {
 		super()
 		this.state = {
@@ -26,7 +27,7 @@ class Content extends Component {
   			jsonText = JSON.stringify(data)
 
 		return (
-	  		<div className="Content">
+	  		<div className="Ratings">
 				<section>
 				{
 		  			// array.map((comment, i) => 
@@ -54,14 +55,13 @@ class Content extends Component {
 		  						<span>All comments: { data.length }</span><br />
 		  					</p>
 		  				{
-		  					Object.keys(winners).map((key, i) => 		  					
-		  						<p key={i} 
-		  							className='rating-block' 
-		  							onClick={ () => openRating(ratings[key]) }
-		  						>
-		  							<span className='title'>{[key]}</span>
-		  							<span className='winner'>{ JSON.stringify(winners[key]) }</span>
-		  						</p>		  					
+		  					Object.keys(winners).map((name, i) => 	
+		  						<RatingItem key={i}
+		  							name={ name }
+		  							ratings={ ratings }
+		  							winners={ winners }
+		  							openRating={ openRating }
+		  						/>	  					
 		  					)
 		  				}
 		  				</div>
@@ -91,4 +91,4 @@ class Content extends Component {
   	}
 }
 
-export default Content
+export default Ratings
