@@ -80,13 +80,12 @@ export function createCommentsArray(array) {
     while(i < array.length ) {
         let row = array[i++], comment = {}
 
-        comment.vote = parseInt(row[0])
-        comment.username = row[1]
-        comment.date = row[2]
-        comment.message = row[3]
+        comment.scores = parseInt(row[0])   //comment vote
+        comment.username = row[1]           //comment username
+        comment.date = row[2]               //comment date
+        comment.message = row[3]            //comment message
 
-        if (Object.keys(comment).length === 4 
-                && comment
+        if (comment && Object.keys(comment).length === 4
                 && comment.username
                 && comment.username !== 'undefined' 
                 && comment.username.length) {

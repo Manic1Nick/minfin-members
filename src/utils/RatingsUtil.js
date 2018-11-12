@@ -32,18 +32,6 @@ export function createRatingsObj(comments, usersObj, daysInMonth) {
 	RATINGS.mostPopularNews		 = sortMessagesWithLinksByVotes(comments)
 	RATINGS.mostPopularWord		 = sortWordsInMessages(comments)
 
-	/*
-		print ratings in console
-	*/
-	// for (let rating in RATINGS) {
-	// 	console.log('RATING', rating, ':')
-	// 	for (let i = 0; i < 10; i++) {
-	// 		let array = RATINGS[rating]
-	// 		if (i < array.length)
-	// 			console.log(i+1, JSON.stringify(array[i]))
-	// 	}		
-	// }
-
 	return RATINGS
 }
 
@@ -52,12 +40,16 @@ export function createRatingsObj(comments, usersObj, daysInMonth) {
 ===========================================================*/
 function sortCommentsByVotes(comments) {
 	return comments.sort((a, b) => {
-		a.scores = a.vote
-		a.description = `
-			"${a.message ? a.message.substring(0, 150) : ''}..."
-			Количество голосов: ${a.scores}
+		return b.scores - a.scores
+	})
+}
+
+function addDescriptionMessage(comments) {
+	comments.forEach(c => {
+		c.description = `
+			${c.message ? c.message.substring(0, 200) : 'error'}...
+			Количество голосов: ${c.scores}
 		`
-		return b.vote - a.vote
 	})
 }
 
@@ -66,14 +58,15 @@ function commentIsNews(comment) {
 }
 
 function createArrayUsersByCommentsQuantities() {
-	let arrayUsersQuantities = [], scores = 0
+	let arrayUsersQuantities = [], quantity = 0, scores = 0
 
 	for (let username in commentsByUsers) {
-		scores = Math.round(commentsByUsers[username].length / days * 10) / 10
+		quantity = commentsByUsers[username].length
+		scores = Math.round(quantity / days * 10) / 10
 
 		arrayUsersQuantities.push({ 
 			username,
-			quantity: commentsByUsers[username].length,
+			quantity,
 			days,
 			scores,
 			description: `Среднее количество комментариев в день: ${scores}`
@@ -90,7 +83,8 @@ function createArrayUsersByCommentsVotes() {
 		let totalVotes = 0
 		commentsByUsers[username].forEach(comment => {
 			// comments with news not includes!
-			if (!commentIsNews(comment)) totalVotes += comment.vote
+			if (!commentIsNews(comment)) 
+				totalVotes += comment.scores
 		})
 
 		scores = Math.round(totalVotes / days * 10) / 10
@@ -99,7 +93,8 @@ function createArrayUsersByCommentsVotes() {
 			username,
 			totalVotes,
 			days,
-			scores
+			scores,
+			description: `Среднее количество полученных голосов в день: ${scores}`
 		})
 	}
 
@@ -114,7 +109,7 @@ function createArrayUsersWithLinkInComments() {
 		commentsByUsers[username].forEach(comment => {
 			if (commentIsNews(comment)) {
 				quantity++
-				totalVotes += comment.vote
+				totalVotes += comment.scores
 			}
 		})
 
@@ -135,29 +130,29 @@ function createArrayUsersWithLinkInComments() {
 	return arrayUsersWithLinks
 }
 
-function createArrayUsersWithoutLinkInComments() {
-	let arrayUsersWithLinks = [], scores = 0
+// function createArrayUsersWithoutLinkInComments() {
+// 	let arrayUsersWithoutLinks = [], scores = 0
 
-	for (let username in commentsByUsers) {
-		let quantity = 0
-		commentsByUsers[username].forEach(comment => {
-			if (!commentIsNews(comment)) quantity++
-		})
+// 	for (let username in commentsByUsers) {
+// 		let quantity = 0
+// 		commentsByUsers[username].forEach(comment => {
+// 			if (!commentIsNews(comment)) quantity++
+// 		})
 
-		if (quantity) {
-			scores = Math.round(quantity / days * 10) / 10
+// 		if (quantity) {
+// 			scores = Math.round(quantity / days * 10) / 10
 
-			arrayUsersWithLinks.push({ 
-				username,
-				quantity,
-				days,
-				scores
-			})
-		}
-	}
+// 			arrayUsersWithoutLinks.push({ 
+// 				username,
+// 				quantity,
+// 				days,
+// 				scores
+// 			})
+// 		}
+// 	}
 
-	return arrayUsersWithLinks
-}
+// 	return arrayUsersWithoutLinks
+// }
 
 function createArrayUsersByAverageLengthMessages() {
 	let array = [], scores = 0
@@ -190,42 +185,34 @@ function createArrayUsersByAverageLengthMessages() {
 */
 
 function getMembersRating() {
-	let scores = 0, members = {} // { username: scores }
-
-	function addScore(username, userScores) {
-		if (!members[username]) members[username] = userScores
-		else members[username] += userScores
-	}
+	let scores = 0, members = {}, // { username: scores }
+		ratings = [ 
+			RATINGS.mostActiveMembers, 
+			// RATINGS.mostPopularMembers, 
+			RATINGS.mostValuableMembers 
+		]
 
 	/*
-		concat 3 ratings 
-		score = length of ranking - place in the ranking
-		summ 3 scores
+		concat ratings 
+		score = summ (place in the ranking / length of ranking) (%)
 	*/
-	// RATINGS.mostPopularMembers.forEach((user, i) => {
-	// 	scores = RATINGS.mostPopularMembers.length - i
-	// 	addScore(user.username, scores)
-	// })
+	ratings.forEach(rating => {
+		rating.forEach((user, i) => {
+			scores = (rating.length - i) / rating.length * 100 / ratings.length
 
-	RATINGS.mostActiveMembers.forEach((user, i) => {
-		scores = RATINGS.mostActiveMembers.length - i
-		addScore(user.username, scores)
+			if (!members[user.username]) members[user.username] = scores
+			else members[user.username] += scores
+		})
 	})
 
-	RATINGS.mostValuableMembers.forEach((user, i) => {
-		scores = RATINGS.mostValuableMembers.length - i
-		addScore(user.username, scores)
-	})	
-	
 	return members
 }
 
 function sortUsersByScores() {
-	let membersObj = getMembersRating(), arrayMembers = [], scores = 0,
-		maxScores = RATINGS.mostActiveMembers.length + RATINGS.mostValuableMembers.length
+	let membersObj = getMembersRating(), arrayMembers = [], scores = 0
 
 	for (let username in membersObj) {
-		scores = Math.round(membersObj[username] / maxScores * 1000) / 10
+		scores = Math.round(membersObj[username] * 10) / 10
 
 		arrayMembers.push({ 
 			username, 
@@ -257,7 +244,8 @@ function sortUsersByVotes() {
 */
 
 function sortComments(comments) {
-	let sortedComments = sortCommentsByVotes(comments)
+	let commentsWithDescriptions = addDescriptionMessage(comments),
+		sortedComments = sortCommentsByVotes(comments)
 
 	return sortedComments
 }
@@ -281,9 +269,10 @@ function sortUsersByTotalComments() {
 */
 
 function sortUsersByAverageVote() {
-	let array = [], quantity = 0, votes = 0, scores = 0
+	let array = [], quantity = 0, votes = 0, scores = 0,
+		{ mostPopularMembers } = RATINGS
 
-	RATINGS.mostPopularMembers.forEach(member => {
+	mostPopularMembers.forEach(member => {
 		votes = member.totalVotes
 		quantity = commentsByUsers[member.username].length
 		scores = Math.round(votes / quantity * 10) / 10

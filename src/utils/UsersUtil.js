@@ -5,7 +5,9 @@ export function createUsersObj(data) {
 }
 
 function createObjCommentsByUsers(comments) {
-	let user = '', temp = [], commentsByUsers = {} // { username: [ comments ] }
+	// return { username: [ comments ] }
+
+	let user = '', temp = [], commentsByUsers = {} 
 
 	comments.forEach(comment => {
 		user = comment.username

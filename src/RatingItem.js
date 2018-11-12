@@ -5,7 +5,7 @@ const NAMES_RUS = {
 	bestMembers: 			'Лучший форумчанин',
 	mostValuableMembers: 	'Самый ценный форумчанин', 
 	mostPopularComments: 	'Лучший комментарий',
-	mostPopularMembers: 	'Приз читательских симпатий',
+	mostPopularMembers: 	'Любимчик публики',
 	mostActiveMembers: 		'Заслуженный работник форума',
 	bestNewsBots: 			'Лучший поставщик новостей',
 	worstNewsBots: 			'Худший поставщик новостей',
@@ -16,25 +16,16 @@ const NAMES_RUS = {
 }
 
 class RatingItem extends Component {
-	constructor() {
-		super()
-		this.state = {}
-  	}
-
-  	componentDidMount() {
-  		
-  	}
-
   	render() {
-  		let { name, ratings, winners, openRating } = this.props
+  		let { name, rating, winner, openRating } = this.props
 
 		return (
 			<div className='RatingItem'>
 				<div className='title'>{ NAMES_RUS[name] }</div>
 
-				<div className='winner' onClick={ () => openRating(ratings[name]) }>
-		  			<div className='winner-name'>{ winners[name][0].username }</div>
-		  			<div className='winner-scores'>{ winners[name][0].description }</div>
+				<div className='winner' onClick={ () => openRating(rating) }>
+		  			<div className='winner-name'>{ winner.username }</div>
+		  			<div className='winner-scores'>{ winner.description }</div>
 		  		</div>
 		  	</div>
 		)

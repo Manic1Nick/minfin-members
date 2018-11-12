@@ -7,10 +7,10 @@ import './App.css'
 
 import { parseDataToArray } from './utils/ParseUtil'
 
-const MONTH = 6,
-	daysInMonth = new Date(2018, MONTH, 0).getDate()
+const DEFAULT_MONTH = 10
+// 	daysInMonth = new Date(2018, MONTH, 0).getDate()
 
-let localData = require('./resources/comments_' + (MONTH > 9 ? MONTH : '0' + MONTH) + '.json')
+// let localData = require('./resources/comments_' + (MONTH > 9 ? MONTH : '0' + MONTH) + '.json')
 // let localData = null
 
 // import jsonfile from 'jsonfile'
@@ -19,15 +19,17 @@ let localData = require('./resources/comments_' + (MONTH > 9 ? MONTH : '0' + MON
 class App extends Component {
   	constructor() {
 		super()
-		this.state = { 
-			data: [],
+		this.state = {
+			month: DEFAULT_MONTH, 
+			localData: null,
+			loadedData: null,
 			activeRating: [],
 			openingOverlay: false
 		}
   	}
 
-  	componentDidMount() {
-  		this._setData(MONTH)
+  	componentWillMount() {
+  		this._setData(DEFAULT_MONTH)
   	}
 
   	handleOpenRating(rating) {
@@ -37,9 +39,18 @@ class App extends Component {
   		})
   	}
 
+  	handleCloseOverlay() {
+  		this.setState({ openingOverlay: false })
+  	}
+
+  	handleChangePeriod(month) {
+  		if (this.state.month !== month)	this._setData(month)
+  	}
+
   	render() {
 
-  		const { data, activeRating, openingOverlay } = this.state
+  		const { month, localData, loadedData, activeRating, openingOverlay } = this.state,
+  			daysInMonth = new Date(2018, month, 0).getDate()
 
 		return (
 	  		<div className="App">
@@ -50,36 +61,45 @@ class App extends Component {
 					localData 
 						? 	<Ratings 
 								data={ localData } 
-								month={ MONTH } 
+								month={ month } 
+								changePeriod={ this.handleChangePeriod.bind(this) }
 								openRating={ this.handleOpenRating.bind(this) } 
 							/> 
 
-						: !localData && data.length === daysInMonth
+						: !localData && loadedData.length === daysInMonth
 							? 
 								<Ratings 
-									data={ [].concat(...data) } 
-									month={ MONTH } 
+									data={ [].concat(...loadedData) } 
+									month={ month } 
 									openRating={ this.handleOpenRating.bind(this) }
 								/> 
 							: 
 								'Loading data.......' 
 				}
 
-				<Overlay content={ activeRating } opening={ openingOverlay } />
+				<Overlay 
+					content={ activeRating } 
+					opening={ openingOverlay } 
+					close={ this.handleCloseOverlay.bind(this) } 
+				/>
 	  		</div>
 		)
   	}
 
   	_setData(month) {
+  		let localData = require('./resources/comments_' + (month > 9 ? month : '0' + month) + '.json')
+
   		if (localData) {
   			console.log('success load local data from', month, 'month with', localData.length, 'comments')
 
-  			this.setState({ data: localData })
+  			this.setState({ month, localData })
 
   		} else {
 	  		console.log('no local data! load from url...')
 
-  			let date = new Date(2018, month - 1, 1), url = ''
+  			let date = new Date(2018, month - 1, 1), 
+  				daysInMonth = new Date(2018, month, 0).getDate(), 
+  				url = ''
 
   			for (let i = 0; i < daysInMonth; i++) {
 				url = 'https://minfin.com.ua/' + this._formatDate(date) + '/currency/'
@@ -101,10 +121,10 @@ class App extends Component {
 	  		})
 	  		.then(page => {
 		  		let newData = page ? parseDataToArray(page) : [],
-		  			{ data } = this.state
+		  			{ loadedData } = this.state
 
-		  		data.push(newData)
-		  		this.setState({ data })
+		  		loadedData.push(newData)
+		  		this.setState({ loadedData })
 
 		  		// this._writeJsonFile(data)
 	  		})

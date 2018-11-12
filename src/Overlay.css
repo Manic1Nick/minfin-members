@@ -13,14 +13,14 @@
 
 .overlay-content {
     position: relative;
-    top: 25%;
+    top: 15%;
     width: 100%;
     text-align: center;
-    margin-top: 30px;
+    margin: 20px 0;
 }
 
 .Overlay div, 
-.Overlay a {
+.Overlay button {
     padding: 8px;
     text-decoration: none;
     font-size: 36px;
@@ -29,7 +29,17 @@
     transition: 0.3s;
 }
 
-.Overlay a:hover, .Overlay a:focus {
+.Overlay button {
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+}
+
+.Overlay button:hover, 
+.Overlay button:focus {
     color: #f1f1f1;
 }
 
