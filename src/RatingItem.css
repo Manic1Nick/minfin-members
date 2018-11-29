@@ -1,11 +1,103 @@
 .RatingItem {
-	margin-bottom: 2%;
+	/*margin-bottom: 2%;*/
     word-break: break-word;   
     word-wrap: break-word;   
     overflow-wrap: break-word;   
+
+    margin: 0.5em;
+    padding: 0.5em;
+    /*width: 400px;*/
+    cursor: pointer;
+    background: transparent;
+    padding: 1rem 1rem;
+    transition: all .5s ease;
+    color: #41403E;
+    outline: none;
+    box-shadow: 20px 38px 34px -26px hsla(0,0%,0%,.2);
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    border: solid 2px #41403E;
+
+    margin-bottom: 2%;
+}
+
+.RatingItem > * {
+    margin-bottom: 2%;
 }
 
 .RatingItem .title {
+    text-align: left;
+    width: 100%;
+    font-size: calc(10px + 2vmin);
+    font-weight: bold;
+    color: #CE8686;
+}
+
+.RatingItem:hover {
+	background: rgb(240, 240, 240);
+    box-shadow: 2px 8px 4px -6px hsla(0,0%,0%,.3);
+}
+
+.RatingItem .winner {
+    /*height: 100px;*/
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.RatingItem .winner .winner-name-box {
+    width: 50%;
+    text-align: center;
+}
+.RatingItem .winner .winner-place-box,
+.RatingItem .winner .winner-scores-box {  
+    width: 25%;
+    position: relative;
+    min-height: 1px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: center;
+}
+
+.RatingItem .winner .winner-circle {
+    width: 100px;
+    height: 0;
+    color: #1a1a1a;
+    padding-bottom: calc(120px - 1.4rem);
+    border-radius: 50%;
+    border: .3rem solid #1a1a1a;
+    position: relative;
+}
+
+.RatingItem .winner .winner-scores-box .winner-circle {
+    border-radius: 10%;
+    width: 70%;
+    min-width: 100px;
+    border: .1rem solid #1a1a1a;
+}
+
+.RatingItem .winner .winner-name-box span {   
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.RatingItem .winner .winner-place-box span,
+.RatingItem .winner .winner-scores-box span {
+    display: block;
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.RatingItem .winner .winner-scores-box span {
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+/*.RatingItem .title {
 	width: 100%;
 }
 
@@ -37,4 +129,4 @@
 .RatingItem .winner-name:hover,
 .RatingItem .winner-scores:hover {
 	background-color: #73AD21;
-}
+}*/

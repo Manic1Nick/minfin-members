@@ -33,13 +33,13 @@ class DropdownPeriod extends Component {
 						onClick={ () => this.toggleOpeningContent() }
 					>Current month: { month }</button>
 
-					<div className={ classContent }>
+					<ul className={ classContent }>
 					{
 						monthes.map((month, i) => 
-							<button key={i} onClick={ () => this.handleOpenPeriod(month) } >{ month }</button>
+							<li key={i} onClick={ () => this.handleOpenPeriod(month) } >{ month }</li>
 						)
 					}
-					</div>
+					</ul>
 				</div>
 			</div>
 	  		

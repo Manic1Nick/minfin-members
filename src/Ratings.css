@@ -5,3 +5,38 @@
 	display: flex;
 	flex-direction: column;	
 }
+
+.Ratings .selected-user {
+	position: relative;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.Ratings .selected-user .selected-user-btn {
+    background-color: #f44336;
+    color: white;
+    padding: 0 8px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.Ratings .selected-user .closebtn {
+    text-decoration: none;
+    font-size: 36px;
+    transition: 0.3s;
+    color: #bebebe;
+    transition: 0.3s;
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    text-decoration: none;
+}
+
+.Ratings .selected-user .closebtn:hover,
+.Ratings .selected-user .closebtn:focus {
+	color: #f1f1f1;
+}

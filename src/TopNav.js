@@ -1,17 +1,21 @@
 import React, { Component } from 'react'
 import './TopNav.css'
 
+import SearchUser from './SearchUser'
+
 class TopNav extends Component {
 
 	openRules() {
 		alert('RULES')
 	}
 
-  	render() {       
+  	render() {
+  		const { usernames, ratings, openUser } = this.props
+
 		return (
 			<div className="topnav">
 			  	<a href="#rules" onClick={ () => this.openRules() }>Open rules</a>
-			  	<input type="text" placeholder="Enter your name..." />
+			  	<SearchUser usernames={ usernames } ratings={ ratings }  openUser={ openUser } />
 			</div>
 		)
   	}

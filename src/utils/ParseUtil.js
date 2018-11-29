@@ -1,7 +1,5 @@
 import { Parser } from 'htmlparser2'
 
-
-
 export function parseDataToArray(data) {
     let array = []
 

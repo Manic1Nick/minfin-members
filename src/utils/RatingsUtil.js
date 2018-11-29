@@ -1,15 +1,17 @@
 const RATINGS = {
 	bestMembers: [],
-	mostValuableMembers: [],
-	mostPopularComments: [],
-	mostPopularMembers: [],
 	mostActiveMembers: [],
+	mostPopularMembers: [],
+	mostValuableMembers: [],
 	bestNewsBots: [],
-	worstNewsBots: [],
 	mrShort: [],
 	mrLong: [],
+	mrWhy: [],
+	mrLoud: [],
+	mrSmile: [],
+	mostPopularComments: [],
 	mostPopularNews: [],
-	mostPopularWord: []
+	mostPopularJokes: []
 }
 
 let commentsByUsers = {}, // { user: [ comments ] }
@@ -21,16 +23,20 @@ export function createRatingsObj(comments, usersObj, daysInMonth) {
 	days = daysInMonth
 
 	RATINGS.mostPopularMembers	 = sortUsersByVotes()
-	RATINGS.mostPopularComments	 = sortComments(comments)
 	RATINGS.mostActiveMembers	 = sortUsersByTotalComments()
 	RATINGS.mostValuableMembers	 = sortUsersByAverageVote()
 	RATINGS.bestMembers			 = sortUsersByScores()
 	RATINGS.bestNewsBots		 = sortUsersByCommentsWithLinks().best
-	RATINGS.worstNewsBots		 = sortUsersByCommentsWithLinks().worst
+	// RATINGS.worstNewsBots	 	 = sortUsersByCommentsWithLinks().worst
 	RATINGS.mrShort				 = sortUsersByMessagesLength().short
 	RATINGS.mrLong				 = sortUsersByMessagesLength().long
+	RATINGS.mrWhy				 = sortUsersByMarks().questions
+	RATINGS.mrLoud				 = sortUsersByMarks().exclamations
+	RATINGS.mrSmile				 = sortUsersByMarks().smiles
+	RATINGS.mostPopularComments	 = sortComments(comments)
 	RATINGS.mostPopularNews		 = sortMessagesWithLinksByVotes(comments)
-	RATINGS.mostPopularWord		 = sortWordsInMessages(comments)
+	RATINGS.mostPopularJokes	 = sortMessagesWithSmiles(comments)
+	// RATINGS.mostPopularWord	 	 = sortWordsInMessages(comments)
 
 	return RATINGS
 }
@@ -83,8 +89,9 @@ function createArrayUsersByCommentsVotes() {
 		let totalVotes = 0
 		commentsByUsers[username].forEach(comment => {
 			// comments with news not includes!
-			if (!commentIsNews(comment)) 
-				totalVotes += comment.scores
+			if (!commentIsNews(comment)) {
+				totalVotes += comment.scores || 0
+			}
 		})
 
 		scores = Math.round(totalVotes / days * 10) / 10
@@ -188,7 +195,7 @@ function getMembersRating() {
 	let scores = 0, members = {}, // { username: scores }
 		ratings = [ 
 			RATINGS.mostActiveMembers, 
-			// RATINGS.mostPopularMembers, 
+			RATINGS.mostPopularMembers, 
 			RATINGS.mostValuableMembers 
 		]
 
@@ -244,8 +251,9 @@ function sortUsersByVotes() {
 */
 
 function sortComments(comments) {
-	let commentsWithDescriptions = addDescriptionMessage(comments),
-		sortedComments = sortCommentsByVotes(comments)
+	addDescriptionMessage(comments)
+
+	let sortedComments = sortCommentsByVotes(comments)
 
 	return sortedComments
 }
@@ -269,29 +277,30 @@ function sortUsersByTotalComments() {
 */
 
 function sortUsersByAverageVote() {
-	let array = [], quantity = 0, votes = 0, scores = 0,
+	let arrayTop = [], arrayDown = [], 
+		quantity = 0, votes = 0, scores = 0, comment = {},
 		{ mostPopularMembers } = RATINGS
 
 	mostPopularMembers.forEach(member => {
 		votes = member.totalVotes
 		quantity = commentsByUsers[member.username].length
 		scores = Math.round(votes / quantity * 10) / 10
-
-		if (quantity >= days) {
-			array.push({
-				username: member.username,
-				votes,
-				quantity,
-				scores,
-				description: `Лучшая средняя оценка за оставленные комментарии: ${scores}`
-			})			
+		comment = {
+			username: member.username,
+			votes,
+			quantity,
+			scores,
+			description: `Лучшая средняя оценка за каждый комментарий: ${scores}`
 		}
 
+		if (quantity >= days) arrayTop.push(comment)
+		else arrayDown.push(comment)
 	})
 
-	array.sort((a, b) => b.scores - a.scores )
+	arrayTop.sort((a, b) => b.scores - a.scores )
+	arrayDown.sort((a, b) => b.scores - a.scores )
 
-	return array
+	return arrayTop.concat(arrayDown)
 }
 
 /*===========================================================
@@ -404,4 +413,76 @@ function createArrayWordsFromCommentMessage(comment) {
 		: ''
 
 	return message.split(' ').filter(word => word.length > 3)
+}
+
+/*===========================================================
+	MR.WHY + MR.EXCLAMATION + MR.SMILE
+	scores = max quantity marks in comments / days
+*/
+
+function sortUsersByMarks() {
+	let questions = [], exclamations = [], smiles = [], comments = [], scores = 0
+
+	Object.keys(commentsByUsers).forEach(username => {
+		comments = commentsByUsers[username]
+
+		if (comments.length > days) {
+			scores = countMarkInCommentsArray(comments, '?')
+			if (scores) questions.push({ 
+				username, scores,
+				description: `Задает вопрос в каждом из ${scores} сообщений`
+			})
+
+			scores = countMarkInCommentsArray(comments, '!')
+			if (scores) exclamations.push({ 
+				username, scores,
+				description: `Восклицает в каждом из ${scores} сообщений`
+			})
+
+			scores = countMarkInCommentsArray(comments, ':)')
+			scores += countMarkInCommentsArray(comments, ';)')
+			if (scores) smiles.push({ 
+				username, scores,
+				description: `Шутит в каждом из ${scores} сообщений`
+			})
+		}
+	})
+
+	questions.sort((a, b) => a.scores - b.scores)
+	exclamations.sort((a, b) => a.scores - b.scores)
+	smiles.sort((a, b) => a.scores - b.scores)
+
+	return { questions, exclamations, smiles }
+}
+
+function countMarkInCommentsArray(commentsArray, mark) {
+	let count = 0, temp = []
+
+	commentsArray.forEach(comment => {
+		if (comment.message) {
+			temp = comment.message.split(mark) || []
+			if (temp.length) count += temp.length - 1
+		}
+	})
+
+	if (count) count = Math.round((commentsArray.length / count) * 10) / 10
+
+	return count
+}
+
+/*===========================================================
+	MOST POPULAR JOKE
+	scores = max votes with comment includes smiles
+*/
+
+function sortMessagesWithSmiles(comments) {
+	let commentsWithSmiles = comments.filter(comment => {
+		if (comment.message 
+			&& (comment.message.includes(':)') || comment.message.includes(';)'))) 
+				return comment
+	})
+
+	commentsWithSmiles.sort((a, b) => b.scores - a.scores)
+
+	return commentsWithSmiles
 }

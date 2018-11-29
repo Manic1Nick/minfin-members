@@ -6,6 +6,9 @@ import Overlay from './Overlay'
 import './App.css'
 
 import { parseDataToArray } from './utils/ParseUtil'
+import { createUsersObj } from './utils/UsersUtil'
+import { createRatingsObj } from './utils/RatingsUtil'
+import { createWinnersObj, createSelectedUserObj } from './utils/WinnersUtil'
 
 const DEFAULT_MONTH = 10
 // 	daysInMonth = new Date(2018, MONTH, 0).getDate()
@@ -21,8 +24,9 @@ class App extends Component {
 		super()
 		this.state = {
 			month: DEFAULT_MONTH, 
-			localData: null,
+			data: null,
 			loadedData: null,
+			selectedUser: '',
 			activeRating: [],
 			openingOverlay: false
 		}
@@ -47,26 +51,39 @@ class App extends Component {
   		if (this.state.month !== month)	this._setData(month)
   	}
 
+  	openUser(selectedUser) {
+  		this.setState({ selectedUser })
+  	}
+
   	render() {
 
-  		const { month, localData, loadedData, activeRating, openingOverlay } = this.state,
-  			daysInMonth = new Date(2018, month, 0).getDate()
+  		const { month, data, selectedUser, loadedData, activeRating, openingOverlay } = this.state,
+  			daysInMonth = new Date(2018, month, 0).getDate(),
+  			usernames = Object.keys(data.users)
+
+  		if (selectedUser) data.selectedRatings = createSelectedUserObj(data.ratings, selectedUser)
+  		else data.selectedRatings = null
+
 
 		return (
 	  		<div className="App">
 				<Header />
-				<TopNav />
+				<TopNav 
+					usernames={ usernames }
+					openUser={ this.openUser.bind(this) } 
+				/>
 
 				{ 
-					localData 
+					data 
 						? 	<Ratings 
-								data={ localData } 
+								data={ data } 
 								month={ month } 
 								changePeriod={ this.handleChangePeriod.bind(this) }
 								openRating={ this.handleOpenRating.bind(this) } 
+								openUser={ this.openUser.bind(this) } 
 							/> 
 
-						: !localData && loadedData.length === daysInMonth
+						: !data && loadedData.length === daysInMonth
 							? 
 								<Ratings 
 									data={ [].concat(...loadedData) } 
@@ -92,7 +109,10 @@ class App extends Component {
   		if (localData) {
   			console.log('success load local data from', month, 'month with', localData.length, 'comments')
 
-  			this.setState({ month, localData })
+  			let data = this._getDataObjects(localData, month)
+  			data.length = localData.length
+
+  			this.setState({ month, data })
 
   		} else {
 	  		console.log('no local data! load from url...')
@@ -146,6 +166,19 @@ class App extends Component {
 		}
 
 		return (year + '/' + month + '/' + day)
+  	}
+
+  	_getDataObjects(data, month) {
+  		let users, ratings, winners
+
+  		const daysInMonth = new Date(2018, month, 0).getDate()
+
+  		if (data && data.length) {
+  			users = createUsersObj(data)
+  			ratings = createRatingsObj(data, users, daysInMonth)
+  			winners = createWinnersObj(ratings)
+  		}
+  		return { users, ratings, winners }
   	}
 
   	// 	_writeJsonFile(data) {
