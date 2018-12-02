@@ -1,5 +1,12 @@
 import React, { Component } from 'react'
 import './RatingItem.css'
+import imgLeft1 from './resources/bay_leaf_left_1_s.png'
+import imgLeft2 from './resources/bay_leaf_left_2_s.png'
+import imgLeft3 from './resources/bay_leaf_left_3_s.png'
+import imgRight1 from './resources/bay_leaf_right_1_s.png'
+import imgRight2 from './resources/bay_leaf_right_2_s.png'
+import imgRight3 from './resources/bay_leaf_right_3_s.png'
+import imgEmpty from './resources/bay_leaf_empty.png'
 
 const NAMES_RUS = {
 	bestMembers: 			'лучший форумчанин',
@@ -24,23 +31,29 @@ const NAMES_RUS = {
 
 class RatingItem extends Component {
 	renderWinnerName(winners) {
+		const winnersUsernames = winners.map(winner => winner.username)
+
 		return(
 			<div className='winner-name-box'>
-			{ 
-				winners.length
-					? winners.map((winner, i) => <span key={i}>{ winner.username }</span>) 
-					: <span>-</span>
-			}
+				<span>{ winnersUsernames.join() }</span>
 			</div>
 		)
 	}
 
 	renderWinnerPlace(place) {
+		let imgObj = {
+			left: { 1: imgLeft1, 2: imgLeft2, 3: imgLeft3 },
+			right: { 1: imgRight1, 2: imgRight2, 3: imgRight3 }
+		}
+		let styleImg = { opacity: place > 3 ? 0 : 1 }
+
 		return(
 			<div className='winner-place-box'>
+				<img src={ imgObj.left[place] || imgEmpty } alt='leaf-bay-left-img' style={ styleImg } />
 				<div className='winner-circle'>
 					<span>{ place }</span>
 				</div>
+				<img src={ imgObj.right[place] || imgEmpty } alt='leaf-bay-right-img' style={ styleImg } />
 			</div>
 		)
 	}
@@ -57,7 +70,7 @@ class RatingItem extends Component {
 	}
  
   	render() {
-  		const { name, rating, winners, selectedUser, openRating } = this.props
+  		const { ratingName, rating, winners, selectedUser, openRating } = this.props
 
   		let users = winners,
   			place = 1,
@@ -73,7 +86,7 @@ class RatingItem extends Component {
 
 		return (
 			<div className='RatingItem'>
-				<div className='title'>{ NAMES_RUS[name] }</div>
+				<div className='title'>{ NAMES_RUS[ratingName] }</div>
 				<div className='winner' onClick={ () => openRating(rating) }>
 					{ this.renderWinnerName(users) }
 					{ this.renderWinnerPlace(place) }

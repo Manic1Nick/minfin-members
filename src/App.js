@@ -64,7 +64,6 @@ class App extends Component {
   		if (selectedUser) data.selectedRatings = createSelectedUserObj(data.ratings, selectedUser)
   		else data.selectedRatings = null
 
-
 		return (
 	  		<div className="App">
 				<Header />

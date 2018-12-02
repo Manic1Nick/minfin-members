@@ -40,3 +40,25 @@
 .Ratings .selected-user .closebtn:focus {
 	color: #f1f1f1;
 }
+
+
+/* Big tablets to 1600px (widths smaller than 1600px row) */
+@media only screen and (max-width: 1600px) {
+    .Ratings {
+        width: 80%;
+    }
+}
+
+/* Big tablets to 1200px (widths smaller than 1200px row) */
+@media only screen and (max-width: 1200px) {
+    .Ratings {
+        width: 90%;
+    }
+}
+
+/* Small phones to small tablets from 481px to 768px */
+@media only screen and (max-width: 768px) {
+    .Ratings {
+        width: 100%;
+    }
+}

@@ -1,30 +1,34 @@
 export function createWinnersObj(ratingsObj) {
-	let winners = {}, // { nameRating: [] }
+	let winners = {}, // { ratingName: [] }
 		maxScores = 0
 
-	Object.keys(ratingsObj).forEach(name => {
-		maxScores = ratingsObj[name][0].scores
+	Object.keys(ratingsObj).forEach(ratingName => {
+		maxScores = ratingsObj[ratingName][0].scores
 		
-		winners[name] = ratingsObj[name].filter(member => member.scores === maxScores)		
+		winners[ratingName] = ratingsObj[ratingName].filter(member => member.scores === maxScores)		
 	})
 
 	return winners
 }
 
 export function createSelectedUserObj(ratingsObj, username) {
-	let selectedObj = {}, // { nameRating: [] }
-		maxScores = 0
+	let selectedObj = { username } // { ratingName: [] }
 
-	Object.keys(ratingsObj).forEach(nameRating => {		
-		selectedObj[nameRating] = ratingsObj[nameRating].filter((member, i) => {
-			if(member.username === username) {
-				member.place = i+1 
+	Object.keys(ratingsObj).forEach(ratingName => {
+		let topMember = ratingsObj[ratingName].find((member, i) => {
+			if (member.username === username) {
+				member.place = i+1
 				return member
 			}
-		})		
+		})
+		selectedObj[ratingName] = [Object.assign({}, topMember)]
 	})
 
-	selectedObj.username = username
-
 	return selectedObj
+}
+
+function printArray(array, from, to) {
+	array.forEach((el, i) => {
+		if (i >= from && i <= to) console.log(el.place, el.username, el.scores)
+	})
 }

@@ -10,3 +10,16 @@
     min-width: 100px;
 	padding: 12px 20px 12px 40px;
 }
+
+
+/* Small phones from 0px to 480px */
+@media only screen and (max-width: 480px) {
+	.topnav > * {
+		padding: 6px 10px 6px 33px;
+	}
+
+	.topnav input[type=text] {
+	    font-size: 16px;
+	    background-position: 5px 5px;
+	}
+}

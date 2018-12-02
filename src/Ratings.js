@@ -15,9 +15,8 @@ class Ratings extends Component {
 
 		return(
 			<div className='selected-user'>
-				Отобрано по: 
 				<div className='selected-user-btn'>
-					{ data.selectedRatings.username } 
+					Отобрано по: { data.selectedRatings.username } 
 					<button className="closebtn" onClick={ () => openUser('') }>&times;</button>
 				</div>
 		  	</div>
@@ -39,16 +38,16 @@ class Ratings extends Component {
 		  						this.renderSelectedUserButton() 
 		  					}
 		  					<p>
-		  						<span>All members: { Object.keys(users).length }</span><br />
-		  						<span>All comments: { data.length }</span><br />
+		  						<span>Всего пользователей: { Object.keys(users).length }</span><br />
+		  						<span>Всего комментариев: { data.length }</span><br />
 		  					</p>
 		  				{
-		  					Object.keys(ratings).map((name, i) => 	
+		  					Object.keys(ratings).map((ratingName, i) => 	
 		  						<RatingItem key={i}
-		  							name={ name }
-		  							rating={ ratings[name] }
-		  							winners={ winners[name] }
-		  							selectedUser={ selectedRatings ? selectedRatings[name] : null }
+		  							ratingName={ ratingName }
+		  							rating={ ratings[ratingName] }
+		  							winners={ winners[ratingName] }
+		  							selectedUser={ selectedRatings ? selectedRatings[ratingName] : null }
 		  							openRating={ openRating }
 		  						/>	  					
 		  					)

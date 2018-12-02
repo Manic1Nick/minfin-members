@@ -31,7 +31,7 @@ class DropdownPeriod extends Component {
 				<div className='dropdown'>
 					<button className='dropbtn'
 						onClick={ () => this.toggleOpeningContent() }
-					>Current month: { month }</button>
+					>Выбранный месяц: { month }</button>
 
 					<ul className={ classContent }>
 					{

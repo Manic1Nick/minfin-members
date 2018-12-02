@@ -27,18 +27,31 @@ export function createRatingsObj(comments, usersObj, daysInMonth) {
 	RATINGS.mostValuableMembers	 = sortUsersByAverageVote()
 	RATINGS.bestMembers			 = sortUsersByScores()
 	RATINGS.bestNewsBots		 = sortUsersByCommentsWithLinks().best
-	// RATINGS.worstNewsBots	 	 = sortUsersByCommentsWithLinks().worst
-	RATINGS.mrShort				 = sortUsersByMessagesLength().short
-	RATINGS.mrLong				 = sortUsersByMessagesLength().long
-	RATINGS.mrWhy				 = sortUsersByMarks().questions
-	RATINGS.mrLoud				 = sortUsersByMarks().exclamations
-	RATINGS.mrSmile				 = sortUsersByMarks().smiles
-	RATINGS.mostPopularComments	 = sortComments(comments)
-	RATINGS.mostPopularNews		 = sortMessagesWithLinksByVotes(comments)
-	RATINGS.mostPopularJokes	 = sortMessagesWithSmiles(comments)
-	// RATINGS.mostPopularWord	 	 = sortWordsInMessages(comments)
+	// RATINGS.worstNewsBots	 = sortUsersByCommentsWithLinks().worst
+
+	let sortedCommentsByMessagesLength = sortUsersByMessagesLength()
+	RATINGS.mrShort				 = sortedCommentsByMessagesLength.short
+	RATINGS.mrLong				 = sortedCommentsByMessagesLength.long
+
+	let sortedUsersByMarks = sortUsersByMarks()
+	RATINGS.mrWhy				 = sortedUsersByMarks.questions
+	RATINGS.mrLoud				 = sortedUsersByMarks.exclamations
+	RATINGS.mrSmile				 = sortedUsersByMarks.smiles
+
+	let sortedCommentsByVotes = sortComments(comments)
+	RATINGS.mostPopularComments	 = sortedCommentsByVotes
+	RATINGS.mostPopularNews		 = sortMessagesWithLinks(sortedCommentsByVotes)
+	RATINGS.mostPopularJokes	 = sortMessagesWithSmiles(sortedCommentsByVotes)
+	// printArray(RATINGS.mostPopularComments, 0, 20)
+	// RATINGS.mostPopularWord	 = sortWordsInMessages(comments)
 
 	return RATINGS
+}
+
+function printArray(array, from, to) {
+	array.forEach((el, i) => {
+		if (i >= from && i <= to) console.log(el.username, el.scores)
+	})
 }
 
 /*===========================================================
@@ -53,7 +66,7 @@ function sortCommentsByVotes(comments) {
 function addDescriptionMessage(comments) {
 	comments.forEach(c => {
 		c.description = `
-			${c.message ? c.message.substring(0, 200) : 'error'}...
+			${c.message ? c.message : 'error'}
 			Количество голосов: ${c.scores}
 		`
 	})
@@ -224,7 +237,7 @@ function sortUsersByScores() {
 		arrayMembers.push({ 
 			username, 
 			scores,
-			description: `Лучший показатель активность + полезность: ${scores}%`
+			description: `Показатель активность + популярность + полезность: ${scores}%`
 		})
 	}
 
@@ -290,7 +303,7 @@ function sortUsersByAverageVote() {
 			votes,
 			quantity,
 			scores,
-			description: `Лучшая средняя оценка за каждый комментарий: ${scores}`
+			description: `Средняя оценка за каждый комментарий: ${scores}`
 		}
 
 		if (quantity >= days) arrayTop.push(comment)
@@ -356,10 +369,8 @@ function sortUsersByMessagesLength() {
 	scores = max total votes in comment with link
 */
 
-function sortMessagesWithLinksByVotes(comments) {
-	let sortedComments = sortCommentsByVotes(comments)
-
-	let commentsWithLinks = sortedComments
+function sortMessagesWithLinks(comments) {
+	let commentsWithLinks = comments
 		.filter(comment => {
 			if (comment.message) return comment.message.indexOf('http') >= 0 
 		})
@@ -482,7 +493,7 @@ function sortMessagesWithSmiles(comments) {
 				return comment
 	})
 
-	commentsWithSmiles.sort((a, b) => b.scores - a.scores)
+	// commentsWithSmiles.sort((a, b) => b.scores - a.scores)
 
 	return commentsWithSmiles
 }
