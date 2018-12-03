@@ -1,20 +1,7 @@
-const RATINGS = {
-	bestMembers: [],
-	mostActiveMembers: [],
-	mostPopularMembers: [],
-	mostValuableMembers: [],
-	bestNewsBots: [],
-	mrShort: [],
-	mrLong: [],
-	mrWhy: [],
-	mrLoud: [],
-	mrSmile: [],
-	mostPopularComments: [],
-	mostPopularNews: [],
-	mostPopularJokes: []
-}
+import { NAMES } from './../constants.js'
 
-let commentsByUsers = {}, // { user: [ comments ] }
+let RATINGS = Object.assign({}, NAMES),
+	commentsByUsers = {}, // { user: [ comments ] }
 	days = 30
 
 export function createRatingsObj(comments, usersObj, daysInMonth) {
@@ -58,9 +45,7 @@ function printArray(array, from, to) {
 	COMMON FUNCTIONS
 ===========================================================*/
 function sortCommentsByVotes(comments) {
-	return comments.sort((a, b) => {
-		return b.scores - a.scores
-	})
+	return comments.sort((a, b) => b.scores - a.scores)
 }
 
 function addDescriptionMessage(comments) {

@@ -94,7 +94,7 @@ class App extends Component {
 				}
 
 				<Overlay 
-					content={ activeRating } 
+					rating={ activeRating } 
 					opening={ openingOverlay } 
 					close={ this.handleCloseOverlay.bind(this) } 
 				/>

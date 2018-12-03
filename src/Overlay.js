@@ -4,19 +4,23 @@ import './Overlay.css'
 class Overlay extends Component {
   	render() {
 
-  		const { content, opening, close } = this.props
+  		const { rating, opening, close } = this.props,
+  			styleOverlay = { width: opening ? '100%' : '0%' }
 
 		return (
-			<div className="Overlay" style={{ width: opening ? '100%' : '0%' }}>
-			  	<button className="closebtn" onClick={ () => close() }>&times;</button>
+			<div className="Overlay" style={ styleOverlay }>
+				<button className="closebtn" onClick={ () => close() }>&times;</button>
 
 			  	<div className="overlay-content">
-			  	Топ 10 позиций рейтинга:
-			  	{
-			  		content.slice(0, 10).map((rate, i) => 
-			  			<p key={i}>{i+1}. {rate.username}, score: {rate.scores}</p>
-			  		)
-			  	}
+				  	<div>Топ 10 позиций рейтинга:</div>
+				  	{
+				  		rating.slice(0, 10).map((position, i) => 
+				  			<div className='overlay-row' key={i}>
+				  				<div className='overlay-title'>{i+1}. {position.username}</div>
+				  				<div className='overlay-description'>{position.description}</div>
+				  			</div>
+				  		)
+				  	}
 			  	</div>
 			</div>
 	  	)

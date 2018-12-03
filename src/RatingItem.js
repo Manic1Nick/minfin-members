@@ -1,33 +1,15 @@
 import React, { Component } from 'react'
 import './RatingItem.css'
+
+import { NAMES } from './constants.js'
+
 import imgLeft1 from './resources/bay_leaf_left_1_s.png'
-import imgLeft2 from './resources/bay_leaf_left_2_s.png'
-import imgLeft3 from './resources/bay_leaf_left_3_s.png'
+import imgLeft2 from './resources/bay_leaf_left_2_s_blue.png'
+import imgLeft3 from './resources/bay_leaf_left_2_s.png'
 import imgRight1 from './resources/bay_leaf_right_1_s.png'
-import imgRight2 from './resources/bay_leaf_right_2_s.png'
-import imgRight3 from './resources/bay_leaf_right_3_s.png'
+import imgRight2 from './resources/bay_leaf_right_2_s_blue.png'
+import imgRight3 from './resources/bay_leaf_right_2_s.png'
 import imgEmpty from './resources/bay_leaf_empty.png'
-
-const NAMES_RUS = {
-	bestMembers: 			'лучший форумчанин',
-	mostValuableMembers: 	'самый ценный форумчанин', 
-	mostPopularMembers: 	'читательские симпатии',
-	mostActiveMembers: 		'заслуженный работник форума',
-	bestNewsBots: 			'лучший поставщик новостей',
-	mrShort: 				'мистер краткость',
-	mrLong: 				'мистер длинный язык',
-	mrWhy: 					'почемучка месяца',
-	mrLoud: 				'самый крикливый форумчанин',
-	mrSmile: 				'самый весёлый форумчанин',
-	mostPopularComments: 	'лучший комментарий',
-	mostPopularNews: 		'самая популярная новость',
-	mostPopularJokes: 		'самая популярная шутка'
-}
-
-/*
-	worstNewsBots: 			'Худший поставщик новостей',
-	mostPopularWord: 		'Самое популярное слово'
-*/
 
 class RatingItem extends Component {
 	renderWinnerName(winners) {
@@ -85,9 +67,9 @@ class RatingItem extends Component {
   		}
 
 		return (
-			<div className='RatingItem'>
-				<div className='title'>{ NAMES_RUS[ratingName] }</div>
-				<div className='winner' onClick={ () => openRating(rating) }>
+			<div className='RatingItem' onClick={ () => openRating(rating) }>
+				<div className='title'>{ NAMES[ratingName] }</div>
+				<div className='winner'>
 					{ this.renderWinnerName(users) }
 					{ this.renderWinnerPlace(place) }
 				  	{ this.renderWinnerScores(scores) }
