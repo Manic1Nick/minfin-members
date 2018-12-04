@@ -35,7 +35,7 @@ class SearchUser extends Component {
 			<div className='SearchUser'>
 				<div className='dropdown'>
 					<input type="text" ref='input' 
-						placeholder="Enter your name..." 
+						placeholder="Введите имя пользователя..." 
 						value={ filter } 
 						onChange={ this.handleFilter.bind(this) }
 					/>

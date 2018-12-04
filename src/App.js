@@ -2,30 +2,26 @@ import React, { Component } from 'react'
 import Header from './Header'
 import TopNav from './TopNav'
 import Ratings from './Ratings'
+import RatingsJsonLoaded from './RatingsJsonLoaded'
 import Overlay from './Overlay'
 import './App.css'
+
+// import jsonfile from 'jsonfile'
 
 import { parseDataToArray } from './utils/ParseUtil'
 import { createUsersObj } from './utils/UsersUtil'
 import { createRatingsObj } from './utils/RatingsUtil'
 import { createWinnersObj, createSelectedUserObj } from './utils/WinnersUtil'
 
-const DEFAULT_MONTH = 10
-// 	daysInMonth = new Date(2018, MONTH, 0).getDate()
-
-// let localData = require('./resources/comments_' + (MONTH > 9 ? MONTH : '0' + MONTH) + '.json')
-// let localData = null
-
-// import jsonfile from 'jsonfile'
-
+const DEFAULT_MONTH = 11
 
 class App extends Component {
   	constructor() {
 		super()
 		this.state = {
 			month: DEFAULT_MONTH, 
-			data: null,
-			loadedData: null,
+			localData: null,
+			urlData: null,
 			selectedUser: '',
 			activeRating: [],
 			openingOverlay: false
@@ -57,40 +53,31 @@ class App extends Component {
 
   	render() {
 
-  		const { month, data, selectedUser, loadedData, activeRating, openingOverlay } = this.state,
-  			daysInMonth = new Date(2018, month, 0).getDate(),
-  			usernames = Object.keys(data.users)
+  		const { month, localData, selectedUser, urlData, activeRating, openingOverlay } = this.state,
+  			daysInMonth = new Date(2018, month, 0).getDate()
 
-  		if (selectedUser) data.selectedRatings = createSelectedUserObj(data.ratings, selectedUser)
-  		else data.selectedRatings = null
+  		if (selectedUser) localData.selectedRatings = createSelectedUserObj(localData.ratings, selectedUser)
+  		else localData.selectedRatings = null
 
 		return (
 	  		<div className="App">
 				<Header />
-				<TopNav 
-					usernames={ usernames }
-					openUser={ this.openUser.bind(this) } 
-				/>
-
 				{ 
-					data 
+					localData 
 						? 	<Ratings 
-								data={ data } 
+								data={ localData } 
 								month={ month } 
+								maxMonth={ DEFAULT_MONTH }
 								changePeriod={ this.handleChangePeriod.bind(this) }
 								openRating={ this.handleOpenRating.bind(this) } 
 								openUser={ this.openUser.bind(this) } 
 							/> 
 
-						: !data && loadedData.length === daysInMonth
+						: !localData && urlData && urlData.length === daysInMonth
 							? 
-								<Ratings 
-									data={ [].concat(...loadedData) } 
-									month={ month } 
-									openRating={ this.handleOpenRating.bind(this) }
-								/> 
+								<RatingsJsonLoaded data={ [].concat(...urlData) } /> 
 							: 
-								'Loading data.......' 
+								'Loading data from url.......' 
 				}
 
 				<Overlay 
@@ -104,14 +91,15 @@ class App extends Component {
 
   	_setData(month) {
   		let localData = require('./resources/comments_' + (month > 9 ? month : '0' + month) + '.json')
+  		// let localData = null
 
   		if (localData) {
-  			console.log('success load local data from', month, 'month with', localData.length, 'comments')
+  			console.log('success load local data from', month, 'month')
 
   			let data = this._getDataObjects(localData, month)
   			data.length = localData.length
 
-  			this.setState({ month, data })
+  			this.setState({ month, localData: data })
 
   		} else {
 	  		console.log('no local data! load from url...')
@@ -140,10 +128,10 @@ class App extends Component {
 	  		})
 	  		.then(page => {
 		  		let newData = page ? parseDataToArray(page) : [],
-		  			{ loadedData } = this.state
+		  			urlData = this.state.urlData || []
 
-		  		loadedData.push(newData)
-		  		this.setState({ loadedData })
+		  		urlData.push(newData)
+		  		this.setState({ urlData })
 
 		  		// this._writeJsonFile(data)
 	  		})

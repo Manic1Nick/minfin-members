@@ -1,11 +1,8 @@
 import React, { Component } from 'react'
 import RatingItem from './RatingItem'
 import DropdownPeriod from './DropdownPeriod'
+import TopNav from './TopNav'
 import './Ratings.css'
-
-// import { createUsersObj } from './utils/UsersUtil'
-// import { createRatingsObj } from './utils/RatingsUtil'
-// import { createWinnersObj } from './utils/WinnersUtil'
 
 class Ratings extends Component {
 	renderSelectedUserButton() {
@@ -24,16 +21,24 @@ class Ratings extends Component {
 	}
 
   	render() {
-  		const { data, month, openRating, changePeriod } = this.props,
-  			{ users, ratings, winners, selectedRatings } = data
+  		const { data, month, maxMonth, openRating, openUser, changePeriod } = this.props,
+  			{ users, ratings, winners, selectedRatings } = data,
+  			usernames = Object.keys(users)
 
 		return (
 	  		<div className="Ratings">
+	  			<TopNav 
+					usernames={ usernames }
+					openUser={ openUser } 
+					openRules={ openRating }
+				/>
 				<section>
-		  		{
-		  			users && ratings && winners ? 
 		  				<div>
-		  					<DropdownPeriod month={ month } openPeriod={ changePeriod } />
+		  					<DropdownPeriod 
+		  						month={ month }
+		  						maxMonth={ maxMonth } 
+		  						openPeriod={ changePeriod } 
+		  					/>
 		  					{ 
 		  						this.renderSelectedUserButton() 
 		  					}
@@ -53,29 +58,10 @@ class Ratings extends Component {
 		  					)
 		  				}
 		  				</div>
-		  			: 'Parsing data.....'
-		  		}
-		  		{
-		  			// jsonUsers
-		  		}
 				</section>
 	  		</div>
 		)
   	}
-
-  	// _getDataObjects() {
-  	// 	let users, ratings, winners
-
-  	// 	const { data, month } = this.props,
-  	// 		daysInMonth = new Date(2018, month, 0).getDate()
-
-  	// 	if (data && data.length) {
-  	// 		users = createUsersObj(data)
-  	// 		ratings = createRatingsObj(data, users, daysInMonth)
-  	// 		winners = createWinnersObj(ratings)
-  	// 	}
-  	// 	return { users, ratings, winners }
-  	// }
 }
 
 export default Ratings

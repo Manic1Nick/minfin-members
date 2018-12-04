@@ -5,17 +5,11 @@ import SearchUser from './SearchUser'
 
 class TopNav extends Component {
 
-	openRules() {
-		alert('RULES')
-	}
-
   	render() {
-  		const { usernames, ratings, openUser } = this.props
-
 		return (
 			<div className="topnav">
-			  	<a href="#rules" onClick={ () => this.openRules() }>Open rules</a>
-			  	<SearchUser usernames={ usernames } ratings={ ratings }  openUser={ openUser } />
+			  	<a href="#rules" onClick={ () => this.props.openRules() }>Читать правила</a>
+			  	<SearchUser { ...this.props } />
 			</div>
 		)
   	}

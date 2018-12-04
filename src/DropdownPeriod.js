@@ -23,7 +23,7 @@ class DropdownPeriod extends Component {
   		const { month } = this.props,
   			{ openingContent } = this.state
 
-  		let monthes = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
+  		let monthes = this._getMonthesArray(),
   			classContent = `dropdown-content ${openingContent ? 'opening' : ''}`
 
 		return (
@@ -44,6 +44,14 @@ class DropdownPeriod extends Component {
 			</div>
 	  		
 		)
+  	}
+
+  	_getMonthesArray() {
+  		let array = []
+
+  		for (let i = 0; i < this.props.maxMonth; i++) array.push(i+1)
+
+  		return array
   	}
 }
 
